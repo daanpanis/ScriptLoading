@@ -1,7 +1,6 @@
 package com.daan.scripting.impl.groovy;
 
 import groovy.lang.GroovyClassLoader;
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 public class FilteredGroovyClassLoader extends GroovyClassLoader {
@@ -14,9 +13,9 @@ public class FilteredGroovyClassLoader extends GroovyClassLoader {
     }
 
     @Override
-    public Class loadClass(String name, boolean lookupScriptFiles, boolean preferClassOverScript, boolean resolve)
-            throws ClassNotFoundException, CompilationFailedException {
-        if (filter != null && !filter.isAllowed(name)) return null;
+    public Class loadClass(String name, boolean lookupScriptFiles, boolean preferClassOverScript, boolean resolve) throws ClassNotFoundException {
+        if (filter != null && !filter.isAllowed(name))
+            return null;
         return super.loadClass(name, lookupScriptFiles, preferClassOverScript, resolve);
     }
 }

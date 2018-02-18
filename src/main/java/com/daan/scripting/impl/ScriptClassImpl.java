@@ -4,6 +4,7 @@ import com.daan.scripting.ScriptClass;
 import com.daan.scripting.ScriptConstructor;
 import com.daan.scripting.ScriptTask;
 import com.daan.scripting.exception.ScriptException;
+import com.daan.scripting.exception.ScriptRuntimeException;
 import com.daanpanis.reflection.constructor.*;
 import com.daanpanis.reflection.impl.constructor.*;
 
@@ -18,6 +19,7 @@ public class ScriptClassImpl<T> implements ScriptClass<T> {
         this.objectTask = objectTask;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class<T> convert(Object value) throws ScriptException {
         if (result == null) {
@@ -30,18 +32,18 @@ public class ScriptClassImpl<T> implements ScriptClass<T> {
 
     @Override
     public CompletableFuture<Class<T>> getAsync() {
-        return objectTask.getAsync().thenApply((object) -> {
+        return objectTask.getAsync().thenApply(object -> {
             try {
                 return convert(object);
             } catch (ScriptException e) {
-                throw new RuntimeException(e);
+                throw new ScriptRuntimeException(e);
             }
         });
     }
 
     @Override
     public ScriptClass<T> inherits(Class<?>... classes) {
-        return new ScriptInheritedClassImpl<T>(objectTask, classes);
+        return new ScriptInheritedClassImpl<>(objectTask, classes);
     }
 
     @Override

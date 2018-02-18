@@ -13,26 +13,17 @@ public class ScriptInheritedClassImpl<T> extends ScriptClassImpl<T> implements S
         this.inheritsClasses = inheritsClasses;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class<T> convert(Object value) throws ScriptException {
         if (value instanceof Class) {
             Class<T> cls = (Class<T>) value;
             for (Class<?> superClass : inheritsClasses) {
-                if (!superClass.isAssignableFrom(cls)) throw new ScriptException("Class doesn't inherit " + superClass);
+                if (!superClass.isAssignableFrom(cls))
+                    throw new ScriptException("Class doesn't inherit " + superClass);
             }
             return cls;
         }
         throw new ScriptException("Value isn't a class!");
     }
-
-    /*@Override
-    public CompletableFuture<Class<T>> getAsync() {
-        return scriptClass.getAsync().thenApply((cls) -> {
-            try {
-                return convert(cls);
-            } catch (ScriptException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }*/
 }

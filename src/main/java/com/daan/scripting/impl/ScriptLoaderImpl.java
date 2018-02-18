@@ -4,7 +4,6 @@ import com.daan.scripting.ScriptCompiler;
 import com.daan.scripting.ScriptLoader;
 import com.daan.scripting.ScriptReader;
 
-import javax.script.ScriptEngine;
 import java.io.Reader;
 import java.util.function.Supplier;
 

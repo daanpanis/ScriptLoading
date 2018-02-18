@@ -3,6 +3,7 @@ package com.daan.scripting.impl;
 import com.daan.scripting.ScriptConstructor;
 import com.daan.scripting.ScriptTask;
 import com.daan.scripting.exception.ScriptException;
+import com.daan.scripting.exception.ScriptRuntimeException;
 import com.daanpanis.reflection.constructor.Constructor;
 
 import java.util.concurrent.CompletableFuture;
@@ -37,11 +38,11 @@ public class ScriptConstructorImpl<T, C extends Constructor<T>> implements Scrip
 
     @Override
     public CompletableFuture<C> getAsync() {
-        return scriptTask.getAsync().thenApply((cls) -> {
+        return scriptTask.getAsync().thenApply(cls -> {
             try {
                 return convert(cls);
             } catch (ScriptException e) {
-                throw new RuntimeException(e);
+                throw new ScriptRuntimeException(e);
             }
         });
     }

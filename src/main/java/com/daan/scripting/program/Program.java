@@ -4,31 +4,30 @@ import com.daan.scripting.ScriptLoader;
 import com.daan.scripting.impl.ScriptLoaderImpl;
 import com.daan.scripting.impl.groovy.ClassFilter;
 import com.daan.scripting.impl.groovy.GroovyCompiler;
+import com.daanpanis.reflection.ReflectionInstance;
+import com.daanpanis.reflection.method.MethodUnknown;
 import me.ecminer.benchmark.Benchmark;
 import me.ecminer.benchmark.Benchmarks;
 
 import javax.script.*;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Program {
 
     static final int BENCH_REPEATS = 40;
+    static final Logger logger = Logger.getLogger(Program.class.getSimpleName());
+
 
     public static void main(String[] args) throws Exception {
         ScriptLoader loader = new ScriptLoaderImpl(new GroovyCompiler(ClassFilter.STRICT));
 
-        Object obj = loader.stream(Program.class.getResourceAsStream("/methods.groovy")).expectClass().constructor().get().instance();
-        Method m = obj.getClass().getDeclaredMethod("bench");
-        Benchmark<?> scriptLoaderBench = new Benchmark<>(BENCH_REPEATS).action(() -> {
-            try {
-                m.invoke(obj);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+        ReflectionInstance<?> obj = loader.stream(Program.class.getResourceAsStream("/methods.groovy")).expectClass().constructor().get().instance();
+
+        Benchmark<MethodUnknown> scriptLoaderBench = new Benchmark<MethodUnknown>(BENCH_REPEATS).supplier(() -> obj.method("bench"))
+                .action(m -> m.invoke());
 
         Benchmark<Invocable> nashornCompiled = new Benchmark<Invocable>(BENCH_REPEATS).supplier(() -> {
             try {
@@ -37,23 +36,26 @@ public class Program {
                 cscript.eval(engine.getBindings(ScriptContext.ENGINE_SCOPE));
                 return (Invocable) cscript.getEngine();
             } catch (ScriptException e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
                 return null;
             }
-        }).action((invocable) -> {
+        }).action(invocable -> {
             try {
                 invocable.invokeFunction("bench");
             } catch (ScriptException | NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         });
 
 
         Benchmark<?> java = new Benchmark<>(BENCH_REPEATS).action(Program::bench);
 
-        System.out.println(Benchmarks.resultsAndGraphToString("Script Loader groovy", scriptLoaderBench.execute(), TimeUnit.MILLISECONDS));
-        System.out.println(Benchmarks.resultsAndGraphToString("Nashorn Compiled", nashornCompiled.execute(), TimeUnit.MILLISECONDS));
-        System.out.println(Benchmarks.resultsAndGraphToString("Java", java.execute(), TimeUnit.MILLISECONDS));
+
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(Benchmarks.resultsAndGraphToString("Script Loader groovy", scriptLoaderBench.execute(), TimeUnit.MILLISECONDS));
+            logger.info(Benchmarks.resultsAndGraphToString("Nashorn Compiled", nashornCompiled.execute(), TimeUnit.MILLISECONDS));
+            logger.info(Benchmarks.resultsAndGraphToString("Java", java.execute(), TimeUnit.MILLISECONDS));
+        }
     }
 
     static String convertStreamToString(java.io.InputStream is) {
@@ -63,7 +65,7 @@ public class Program {
 
     static void bench() {
         for (int i = 0; i < 100000; i++) {
-            double b = Math.sqrt((double) (i * i * i));
+            Math.sqrt((double) (i * i * i));
         }
     }
 }

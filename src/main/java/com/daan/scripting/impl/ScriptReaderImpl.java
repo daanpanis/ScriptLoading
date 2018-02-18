@@ -4,10 +4,8 @@ import com.daan.scripting.ScriptClass;
 import com.daan.scripting.ScriptCompiler;
 import com.daan.scripting.ScriptReader;
 import com.daan.scripting.exception.ScriptException;
-import groovy.lang.GroovyClassLoader;
-import org.codehaus.groovy.control.CompilerConfiguration;
+import com.daan.scripting.exception.ScriptRuntimeException;
 
-import javax.script.ScriptEngine;
 import java.io.Reader;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -37,7 +35,7 @@ public class ScriptReaderImpl implements ScriptReader {
             try {
                 return convert(readerSupplier.get());
             } catch (ScriptException e) {
-                throw new RuntimeException(e);
+                throw new ScriptRuntimeException(e);
             }
         });
     }
