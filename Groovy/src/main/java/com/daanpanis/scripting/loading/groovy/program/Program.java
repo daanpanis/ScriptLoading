@@ -1,8 +1,8 @@
 package com.daanpanis.scripting.loading.groovy.program;
 
 import com.daan.scripting.loading.impl.ScriptLoaderImpl;
-import com.daanpanis.reflection.ReflectionInstance;
-import com.daanpanis.reflection.method.MethodUnknown;
+import com.daanpanis.utils.reflection.ReflectionInstance;
+import com.daanpanis.utils.reflection.method.MethodUnknown;
 import com.daanpanis.scripting.loading.api.ScriptLoader;
 import com.daanpanis.scripting.loading.groovy.ClassFilter;
 import com.daanpanis.scripting.loading.groovy.GroovyCompiler;

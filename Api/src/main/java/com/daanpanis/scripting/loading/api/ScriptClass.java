@@ -1,6 +1,6 @@
 package com.daanpanis.scripting.loading.api;
 
-import com.daanpanis.reflection.constructor.*;
+import com.daanpanis.utils.reflection.constructor.*;
 
 public interface ScriptClass<T> extends ScriptTask<Class<T>>, ScriptConverter<Object, Class<T>> {
 

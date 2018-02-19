@@ -5,8 +5,8 @@ import com.daanpanis.scripting.loading.api.ScriptConstructor;
 import com.daanpanis.scripting.loading.api.ScriptTask;
 import com.daanpanis.scripting.loading.api.exception.ScriptException;
 import com.daanpanis.scripting.loading.api.exception.ScriptRuntimeException;
-import com.daanpanis.reflection.constructor.*;
-import com.daanpanis.reflection.impl.constructor.*;
+import com.daanpanis.utils.reflection.constructor.*;
+import com.daanpanis.utils.reflection.impl.constructor.*;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -4,7 +4,7 @@ import com.daanpanis.scripting.loading.api.ScriptConstructor;
 import com.daanpanis.scripting.loading.api.ScriptTask;
 import com.daanpanis.scripting.loading.api.exception.ScriptException;
 import com.daanpanis.scripting.loading.api.exception.ScriptRuntimeException;
-import com.daanpanis.reflection.constructor.Constructor;
+import com.daanpanis.utils.reflection.constructor.Constructor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
