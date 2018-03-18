@@ -8,6 +8,7 @@ import com.daanpanis.scripting.loading.api.exception.ScriptRuntimeException;
 
 import java.io.Reader;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class ScriptReaderImpl implements ScriptReader {
@@ -32,12 +33,14 @@ public class ScriptReaderImpl implements ScriptReader {
     @Override
     public CompletableFuture<Object> getAsync() {
         return CompletableFuture.supplyAsync(() -> {
+//            System.out.println(readerSupplier.get());
+//            System.out.println("1");
             try {
                 return convert(readerSupplier.get());
             } catch (ScriptException e) {
                 throw new ScriptRuntimeException(e);
             }
-        });
+        }, Executors.newSingleThreadExecutor());
     }
 
     @Override

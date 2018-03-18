@@ -23,8 +23,7 @@ public class ScriptClassImpl<T> implements ScriptClass<T> {
     @Override
     public Class<T> convert(Object value) throws ScriptException {
         if (result == null) {
-            if (!(value instanceof Class))
-                throw new ScriptException("Return script value isn't a class!");
+            if (!(value instanceof Class)) throw new ScriptException("Return script value isn't a class!");
             result = (Class<T>) value;
         }
         return result;
@@ -32,7 +31,10 @@ public class ScriptClassImpl<T> implements ScriptClass<T> {
 
     @Override
     public CompletableFuture<Class<T>> getAsync() {
-        return objectTask.getAsync().thenApply(object -> {
+        CompletableFuture<?> future = objectTask.getAsync();
+//        System.out.println("Getting async!");
+        return future.thenApplyAsync(object -> {
+//            System.out.println("2");
             try {
                 return convert(object);
             } catch (ScriptException e) {

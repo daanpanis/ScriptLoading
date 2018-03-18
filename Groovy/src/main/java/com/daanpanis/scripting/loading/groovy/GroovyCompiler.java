@@ -15,16 +15,19 @@ import java.nio.charset.StandardCharsets;
 
 public class GroovyCompiler implements ScriptCompiler {
 
-    private final GroovyClassLoader classLoader;
+    public static final GroovyClassLoader classLoader;
+
+    static {
+        CompilerConfiguration config = new CompilerConfiguration();
+        config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
+        classLoader = new FilteredGroovyClassLoader(ClassFilter.STRICT, GroovyCompiler.class.getClassLoader(), config);
+    }
 
     public GroovyCompiler() {
         this(null);
     }
 
     public GroovyCompiler(ClassFilter filter) {
-        CompilerConfiguration config = new CompilerConfiguration();
-        config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
-        this.classLoader = new FilteredGroovyClassLoader(ClassFilter.STRICT, GroovyCompiler.class.getClassLoader(), config);
     }
 
     @Override
